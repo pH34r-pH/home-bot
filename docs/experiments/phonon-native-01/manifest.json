@@ -1,0 +1,19 @@
+{
+  "device_model": "Pixel 5",
+  "android_version": "14",
+  "keyguard_remained_locked": true,
+  "upstream_source_commit": "f07d7952db0c6127d5e4bc3f41c82b3304b6b5aa",
+  "runtime": "ptts-ffi@0.4.0",
+  "model": "gradium/phonon-31m-en",
+  "model_revision": "541f5752bc3c79583068bb205bfda5eb39aaa08a",
+  "quantization": "q8",
+  "voice": "default",
+  "rust_version": "1.93.1",
+  "cargo_ndk_version": "4.1.2",
+  "ndk": "r29",
+  "sample_text": "Hello. I am your home robot. My voice is running directly on this Pixel phone. Please turn left, then stop.",
+  "sample_sha256": "a9e2a493f50388eeb6db78a62833181d774448515761eefecd94f98f933c75a4",
+  "hardware_microphone_tested": false,
+  "physical_acoustic_output_measured": false,
+  "note": "Native synthesis and Android output frame progress were verified over ADB. No browser or unlock used. Playback buffers the full WAV."
+}

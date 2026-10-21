@@ -1,0 +1,14 @@
+{
+  "state": "cancelled",
+  "elapsed_ms": 1022,
+  "keyguard_locked": true,
+  "media_volume": 6,
+  "media_volume_before": 0,
+  "media_volume_max": 25,
+  "expected_frames": 180480,
+  "duration_ms": 7520,
+  "playback_head_frames": 22560,
+  "play_state": 3,
+  "routed_device_type": 2,
+  "speaker_route": true
+}

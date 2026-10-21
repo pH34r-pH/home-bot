@@ -1,0 +1,19 @@
+{
+  "runtime": "ptts-ffi@0.4.0",
+  "backend": "native_android_cpu",
+  "threads": 2,
+  "load_ms": 125.013502,
+  "first_callback_ms": 385.163840,
+  "generation_wall_ms": 1735.603819,
+  "sample_rate_hz": 24000,
+  "samples": 48000,
+  "audio_seconds": 2.000000,
+  "audio_seconds_per_compute_second": 1.152337,
+  "rms": 0.073683673,
+  "peak": 0.428082794,
+  "library_ok": true,
+  "cancellation_requested": true,
+  "library_frames": 25,
+  "library_first_audio_ms": 385.159257,
+  "library_total_ms": 1735.598662
+}

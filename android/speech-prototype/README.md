@@ -70,9 +70,11 @@ audio chunk arrived in 54.7 ms, the audio context reported running, and playback
 finished with zero reported starvation gaps. This is not a phone benchmark or a
 microphone test. See the [desktop-only measurement](../../docs/experiments/phonon-01/desktop-baseline.json).
 
-The physical Pixel 5 is connected on Android 14, but its test is pending an
-operator unlock and manual opening of the page. Automated ADB page launch was
-rejected by the execution approval policy; no phone synthesis result is claimed.
+The browser test on the Pixel remains unvalidated: its ADB browser launch was
+rejected by the execution approval policy while the phone was locked. A subsequent
+[native CPU experiment](../../docs/experiments/phonon-native-01/README.md) successfully
+generated and played speech on the locked Pixel over ADB, without using a browser.
+Those native measurements are distinct from this page's Windows baseline.
 
 The model caches in Chrome, and a loaded model generates without remote services.
 This page still needs the local server to open/reload and to receive evidence;

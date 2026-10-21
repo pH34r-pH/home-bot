@@ -26,9 +26,12 @@ screen. A future arm/gripper will extend the platform to household tasks.
 - A recorded [gpt-6-luna pilot experiment](docs/experiments/luna-01/README.md):
   target approach and screen action worked; the complete task failed because the
   robot stopped 61.6 cm away instead of within the requested 25–50 cm band.
+- A [native Pixel speech prototype](android/speech-native/README.md): Phonon 31M
+  CPU synthesis and Android speaker-route playback verified over ADB while locked.
+  The standalone `say_phone.py` command does not require a browser or cloud API.
 - Unit/API tests and an actual Webots maneuver test with images and a JSON report.
 
-**This is a simulator prototype.** Autonomous navigation, the native Android app,
+**The robot remains a simulator prototype.** Autonomous navigation, the native Android robot brain,
 Pixel-to-Mega transport, servo feedback decoding, and physical firmware are not
 implemented yet. No commands are sent to hardware.
 
