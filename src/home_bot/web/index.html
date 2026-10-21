@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Home Bot · Operator</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header><div><span class="eyebrow">HOME BOT / SIMULATION</span><h1>A small robot.<br>A view of home.</h1></div><span id="connection" class="pill">Connecting</span></header>
+  <main>
+    <section class="card vision"><div class="card-title"><h2>Rear camera</h2><span>Pixel 5 · portrait</span></div><div class="camera-well"><img id="camera" alt="Simulated rear camera view"></div><p>Camera moves with the phone. At 180° pan, the screen faces forward.</p></section>
+    <section class="card"><div class="card-title"><h2>Drive</h2><span>Hold to move</span></div><div class="drive-pad"><button data-drive="forward" class="up" aria-label="Drive forward">↑</button><button data-drive="left" class="left" aria-label="Turn left">↶</button><button id="stop" class="stop">STOP</button><button data-drive="right" class="right" aria-label="Turn right">↷</button><button data-drive="back" class="down" aria-label="Drive backward">↓</button></div><label>Speed <output id="speed-value">0.12 m/s</output><input id="speed" type="range" min="0.03" max="0.25" value="0.12" step="0.01"></label><p>Motion stops when released or when commands expire. Controls address the simulator only.</p></section>
+    <section class="card"><div class="card-title"><h2>Look & express</h2><span>Virtual gimbal</span></div><label>Pan <output id="pan-value">0°</output><input id="pan" type="range" min="0" max="180" value="0" step="1"></label><div class="presets"><button id="look-forward">Camera forward</button><button id="show-face">Show face</button></div><label>Tilt <output id="tilt-value">0°</output><input id="tilt" type="range" min="-34" max="34" value="0" step="1"></label><label>Expression<select id="expression" aria-label="Expression"><option>neutral</option><option>happy</option><option>curious</option><option>sleepy</option></select></label><label>Screen text<input id="text" maxlength="48" value="HELLO" autocomplete="off"></label><p>Half-turn travel is a design target. Actual mechanical limits still need measurement.</p></section>
+    <section class="card telemetry"><div class="card-title"><h2>Robot state</h2><span id="time">—</span></div><dl><div><dt>Wheel feedback</dt><dd id="wheels">—</dd></div><div><dt>Pan / tilt feedback</dt><dd id="gimbal">—</dd></div><div><dt>Wheel odometry</dt><dd id="odometry">—</dd></div><div><dt>Motion watchdog</dt><dd id="watchdog">—</dd></div></dl><p>Odometry is an estimate from the wheels. No simulator position or perfect depth enters the control interface.</p></section>
+  </main>
+  <footer>Webots prototype · Local control · Apache 2.0 · Autonomous navigation and the Android/Mega adapters are future work.</footer>
+</body>
+</html>

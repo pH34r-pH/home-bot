@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.tools/
+artifacts/
+build/
+dist/
+.DS_Store
+Thumbs.db
+sim/webots/worlds/.*.wbproj
+local.properties
+*.log

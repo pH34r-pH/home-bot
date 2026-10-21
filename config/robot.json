@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "wheel_radius_m": 0.034,
+  "track_width_m": 0.105,
+  "max_linear_mps": 0.44704,
+  "max_angular_rps": 3.0,
+  "wheel_acceleration_rad_s2": 18.0,
+  "wheel_torque_nm": 0.25,
+  "pan_min_rad": 0.0,
+  "pan_max_rad": 3.141592653589793,
+  "tilt_min_rad": -0.6,
+  "tilt_max_rad": 0.6,
+  "gimbal_speed_rad_s": 1.2,
+  "gimbal_torque_nm": 0.25,
+  "command_ttl_ms": 400,
+  "camera_width": 160,
+  "camera_height": 240,
+  "camera_horizontal_fov_rad": 0.9,
+  "camera_period_ms": 128,
+  "http_host": "127.0.0.1",
+  "http_port": 8765,
+  "notes": {
+    "confirmed": "Boe-Bot chassis; Arduino Mega; feedback on wheel and gimbal actuators; portrait Pixel 5, rear cameras forward at pan zero.",
+    "estimated": "1 mph top speed is the owner's estimate, not a measurement. Wheel dimensions, torque, acceleration, FOV and all gimbal limits are provisional.",
+    "pan": "0..pi is a simulation design target for a half-turn to show the screen. It does not establish the physical gimbal travel.",
+    "geometry": "Mechanical dimensions and masses are defined in HomeBot.proto. Update them alongside these controller parameters; run smoke tests after changes."
+  }
+}

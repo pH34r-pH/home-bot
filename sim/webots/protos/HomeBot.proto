@@ -1,0 +1,194 @@
+#VRML_SIM R2025a utf8
+# template language: javascript
+# SPDX-License-Identifier: Apache-2.0
+# Original approximate geometry, not derived from the bundled Webots BoeBot asset.
+# Robot frame: +X forward, +Y left, +Z up. Dimensions in meters.
+# Phone and gimbal dimensions outside Pixel's documented envelope are provisional.
+PROTO HomeBot [
+  field SFVec3f translation 0 0 0.034
+  field SFRotation rotation 0 0 1 0
+  field SFString controller "home_bot_controller"
+  field MFString controllerArgs []
+  field SFBool supervisor FALSE
+  field SFFloat wheelRadius 0.034
+  field SFFloat trackWidth 0.105
+  field SFFloat maxWheelVelocity 13.1482352941
+  field SFFloat wheelAcceleration 18
+  field SFFloat wheelTorque 0.25
+  field SFFloat panMin 0
+  field SFFloat panMax 3.14159265359
+  field SFFloat tiltMin -0.6
+  field SFFloat tiltMax 0.6
+  field SFFloat gimbalSpeed 1.2
+  field SFFloat gimbalTorque 0.25
+  field SFInt32 cameraWidth 160
+  field SFInt32 cameraHeight 240
+  field SFFloat cameraFov 0.9
+] {
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    controllerArgs IS controllerArgs
+    supervisor IS supervisor
+    name "Home Bot"
+    model "Boe-Bot + Mega + portrait Pixel 5 (approximation)"
+    children [
+      Pose {
+        translation -0.025 0 0.015
+        children [
+          Shape {
+            appearance PBRAppearance { baseColor 0.63 0.69 0.73 roughness 0.6 metalness 0.5 }
+            geometry Box { size 0.125 0.085 0.040 }
+          }
+        ]
+      }
+      Pose {
+        translation -0.025 0 0.040
+        children [
+          Shape {
+            appearance PBRAppearance { baseColor 0.04 0.30 0.40 roughness 0.8 metalness 0 }
+            geometry Box { size 0.102 0.054 0.010 }
+          }
+        ]
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters { axis 0 1 0 anchor 0 %<= fields.trackWidth.value / 2 >% 0 }
+        device [
+          RotationalMotor { name "left_wheel" maxVelocity IS maxWheelVelocity acceleration IS wheelAcceleration maxTorque IS wheelTorque }
+          PositionSensor { name "left_wheel_feedback" }
+        ]
+        endPoint Solid {
+          translation 0 %<= fields.trackWidth.value / 2 >% 0
+          rotation 1 0 0 1.57079632679
+          name "left wheel"
+          contactMaterial "tire"
+          children [
+            Shape {
+              appearance PBRAppearance { baseColor 0.035 0.045 0.055 roughness 1 metalness 0 }
+              geometry DEF LEFT_TIRE Cylinder { radius IS wheelRadius height 0.009 subdivision 32 }
+            }
+          ]
+          boundingObject USE LEFT_TIRE
+          physics Physics { density -1 mass 0.025 }
+        }
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters { axis 0 1 0 anchor 0 %<= -fields.trackWidth.value / 2 >% 0 }
+        device [
+          RotationalMotor { name "right_wheel" maxVelocity IS maxWheelVelocity acceleration IS wheelAcceleration maxTorque IS wheelTorque }
+          PositionSensor { name "right_wheel_feedback" }
+        ]
+        endPoint Solid {
+          translation 0 %<= -fields.trackWidth.value / 2 >% 0
+          rotation 1 0 0 1.57079632679
+          name "right wheel"
+          contactMaterial "tire"
+          children [
+            Shape {
+              appearance PBRAppearance { baseColor 0.035 0.045 0.055 roughness 1 metalness 0 }
+              geometry DEF RIGHT_TIRE Cylinder { radius IS wheelRadius height 0.009 subdivision 32 }
+            }
+          ]
+          boundingObject USE RIGHT_TIRE
+          physics Physics { density -1 mass 0.025 }
+        }
+      }
+      BallJoint {
+        jointParameters BallJointParameters { anchor -0.055 0 -0.021 }
+        endPoint Solid {
+          translation -0.055 0 -0.021
+          name "passive caster ball"
+          contactMaterial "caster"
+          children [ Shape { appearance PBRAppearance { baseColor 0.8 0.8 0.8 roughness 0.25 } geometry DEF CASTER Sphere { radius 0.013 } } ]
+          boundingObject USE CASTER
+          physics Physics { density -1 mass 0.01 }
+        }
+      }
+      Pose {
+        translation -0.02 0 0.055
+        children [ Shape { appearance PBRAppearance { baseColor 0.10 0.14 0.17 roughness 0.8 metalness 0 } geometry Box { size 0.040 0.040 0.020 } } ]
+      }
+      HingeJoint {
+        # Pan travel is bounded by motor targets; an ODE hard stop cannot sit at pi.
+        jointParameters HingeJointParameters { axis 0 0 1 anchor -0.02 0 0.065 dampingConstant 0.01 }
+        device [
+          RotationalMotor { name "pan" minPosition IS panMin maxPosition IS panMax maxVelocity IS gimbalSpeed maxTorque IS gimbalTorque }
+          PositionSensor { name "pan_feedback" }
+        ]
+        endPoint Solid {
+          translation -0.02 0 0.065
+          name "pan stage"
+          children [
+            Pose { translation 0 0 0.013 children [ Shape { appearance PBRAppearance { baseColor 0.13 0.19 0.22 metalness 0 roughness 0.8 } geometry DEF PAN_BLOCK Box { size 0.040 0.042 0.026 } } ] }
+            HingeJoint {
+              jointParameters HingeJointParameters { axis 0 -1 0 anchor 0 0 0.026 minStop IS tiltMin maxStop IS tiltMax dampingConstant 0.01 }
+              device [
+                RotationalMotor { name "tilt" minPosition IS tiltMin maxPosition IS tiltMax maxVelocity IS gimbalSpeed maxTorque IS gimbalTorque }
+                PositionSensor { name "tilt_feedback" }
+              ]
+              endPoint Solid {
+                translation 0 0 0.026
+                name "phone and tilt cradle"
+                children [
+                  Pose { translation 0 0 0.007 children [ Shape { appearance PBRAppearance { baseColor 0.55 0.60 0.65 roughness 0.6 } geometry Box { size 0.025 0.080 0.014 } } ] }
+                  Pose {
+                    translation 0 0 0.08735
+                    children [ Shape { appearance PBRAppearance { baseColor 0.08 0.11 0.12 roughness 0.6 metalness 0 } geometry DEF PHONE Box { size 0.008 0.0704 0.1447 } } ]
+                  }
+                  Pose {
+                    translation 0.0048 0.020 0.139
+                    children [ Shape { appearance PBRAppearance { baseColor 0.025 0.03 0.035 roughness 0.25 } geometry Box { size 0.002 0.025 0.025 } } ]
+                  }
+                  Camera {
+                    translation 0.006 0.022 0.142
+                    name "rear_camera"
+                    width IS cameraWidth
+                    height IS cameraHeight
+                    fieldOfView IS cameraFov
+                    near 0.015
+                    far 8
+                    noise 0.005
+                  }
+                  Accelerometer { translation 0 0 0.08735 rotation 0.57735026919 -0.57735026919 -0.57735026919 2.09439510239 name "phone_accelerometer" }
+                  Gyro { translation 0 0 0.08735 rotation 0.57735026919 -0.57735026919 -0.57735026919 2.09439510239 name "phone_gyro" }
+                  Display {
+                    name "phone_screen"
+                    width 160
+                    height 300
+                    children [
+                      Shape {
+                        appearance Appearance {
+                          material Material { diffuseColor 0 0 0 emissiveColor 1 1 1 }
+                          texture ImageTexture { url ["../textures/screen.png"] filtering 0 }
+                        }
+                        geometry IndexedFaceSet {
+                          coord Coordinate { point [ -0.0042 0.031 -0.0, -0.0042 -0.031 -0.0, -0.0042 -0.031 0.1347, -0.0042 0.031 0.1347 ] }
+                          coordIndex [0 1 2 3 -1]
+                          texCoord TextureCoordinate { point [0 0, 1 0, 1 1, 0 1] }
+                          texCoordIndex [0 1 2 3 -1]
+                        }
+                      }
+                    ]
+                    translation 0 0 0.020
+                  }
+                ]
+                boundingObject Pose { translation 0 0 0.08735 children [ Box { size 0.010 0.074 0.148 } ] }
+                physics Physics { density -1 mass 0.181 centerOfMass [0 0 0.077] }
+              }
+            }
+          ]
+          boundingObject Pose { translation 0 0 0.013 children [ Box { size 0.040 0.042 0.026 } ] }
+          physics Physics { density -1 mass 0.045 }
+        }
+      }
+    ]
+    boundingObject Group {
+      children [
+        Pose { translation -0.025 0 0.015 children [ Box { size 0.125 0.085 0.040 } ] }
+        Pose { translation -0.02 0 0.055 children [ Box { size 0.040 0.040 0.020 } ] }
+      ]
+    }
+    physics Physics { density -1 mass 0.45 centerOfMass [-0.025 0 0.015] }
+  }
+}

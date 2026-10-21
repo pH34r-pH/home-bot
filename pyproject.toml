@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "home-bot"
+version = "0.1.0"
+description = "A Pixel-brained home robot: Webots simulation and control interfaces"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{name = "Home Bot contributors"}]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/pH34r-pH/home-bot"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+home_bot = ["web/*.html", "web/*.css", "web/*.js"]

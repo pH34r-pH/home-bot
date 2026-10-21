@@ -1,0 +1,12 @@
+Home Bot
+Copyright 2026 Home Bot contributors
+
+This project includes original source code, approximate robot geometry,
+documentation, and generated assets under the Apache License, Version 2.0.
+
+Google Pixel, Arduino, Boe-Bot, Parallax and Webots are names belonging to their
+respective owners. Their use identifies the target hardware and software and
+does not imply endorsement.
+
+The original HomeBot model does not incorporate the Webots BoeBot model or its
+textures. Webots itself is an external dependency and is not distributed here.
