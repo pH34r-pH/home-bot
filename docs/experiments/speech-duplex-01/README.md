@@ -112,6 +112,36 @@ There were no wake-word, speaker identity, background speech, distance, noise,
 or false-activation evaluations. A single empty silence window establishes none
 of those rates.
 
+## Follow-up: delayed playback and wider capture windows
+
+At the owner's request, the PC tests were repeated with a two-second delay after
+the host observed `listening`. Playback additionally waited for at least 32,000
+microphone samples (two seconds at 16 kHz), rather than relying only on service
+startup. The short clip used a 16-second capture and the long clip used 20 seconds.
+PC endpoint, fixture and gain settings matched their corresponding earlier runs.
+
+| Retry | Clip | Launch after listening observed | Captured samples at launch | PC exit before completion observed | Transcript |
+| --- | --- | --- | --- | --- | --- |
+| [Short delayed](pc-acoustic-04-delayed.json) | 2.56 s; system 50%, ffplay 100% | 2,047 ms | 32,000 | 11,313 ms | `T THEN STOPPED` |
+| [Long delayed](pc-acoustic-05-delayed.json) | 7.52 s; system 25%, ffplay 70% | 2,078 ms | 32,000 | 10,282 ms | Empty |
+
+The PC player ran for approximately 2.83 and 7.72 seconds, respectively. The Pixel
+captured all 256,000 / 320,000 requested samples, remained locked, and Android
+reported neither session silenced. Host observation timestamps include polling
+and reporting latency; they are not sample-synchronized timestamps. The large
+leading/trailing margins enclose both clips without relying on precise clock
+alignment. Both results match the corresponding earlier transcripts, so simply
+starting PC playback too early or ending capture too soon does not explain these
+failures. This does not isolate the remaining acoustic/model error.
+
+`phone_speech.py listen --play-wav` now defaults to this two-second delay and a
+four-second trailing budget. It automatically expands capture to fit the fixture,
+both margins, and two seconds of host launch/report allowance, rejects clips that
+cannot fit the 30-second app limit, and checks the observed trailing margin.
+Three scheduling regression tests were added; all 19 Python tests passed.
+PC volume was restored to 10%, phone volume stayed 0/25, and the speech service
+was stopped afterward. No raw microphone audio was retained.
+
 ## Reproduce and next work
 
 Build/install and usage are in the [native speech README](../../../android/speech-native/README.md).

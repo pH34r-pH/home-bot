@@ -50,6 +50,13 @@ Listening uses 16 kHz mono PCM, CPU greedy decoding, and a fixed 1–30 second
 window. It produces final text after that window; endpointing, wake words,
 barge-in and conversation/command dispatch are not implemented.
 
+For PC acoustic tests, `--play-delay` defaults to two seconds after the host first
+observes `listening`; playback also waits for at least two seconds of captured PCM.
+`--play-tail` defaults to four seconds. The wrapper expands `--seconds` when needed
+to fit the clip, delay, tail, and two seconds of launch/report allowance. It rejects
+clips that cannot fit within the app's 30-second limit and records launch/exit timing
+in the report. An observed trailing margin below the requested tail fails the test.
+
 ## Build the CPU library and harness
 
 Requirements: Docker Desktop with Linux containers, Git, Python, and free Android
