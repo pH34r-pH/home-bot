@@ -1,0 +1,26 @@
+{
+  "run_id": "luna-pilot-01",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "result": "partial_success",
+  "strict_task_success": false,
+  "first_observation_utc": "2026-10-21T05:42:54.398347+00:00",
+  "last_observation_utc": "2026-10-21T05:45:51.036682+00:00",
+  "wall_duration_s": 176.638335,
+  "action_count": 16,
+  "drive_command_count": 12,
+  "observation_count": 18,
+  "final_odometry": {
+    "x_m": 1.6843665152615293,
+    "y_m": -2.6494517948903516e-15,
+    "yaw_rad": -4.24731218478207e-12
+  },
+  "final_target_center_distance_m": 0.615692594077875,
+  "above_floor_contact_events": 0,
+  "initial_camera": "observations/001.png",
+  "last_forward_camera": "observations/014.png",
+  "final_camera": "observations/018.png",
+  "spectator_image": "final-scene.png",
+  "spectator_filtered_pixel_sha256": "6406410c76d73f73c02abc3fd48dc6087068da6b5768366974205099674bcfb8",
+  "note": "Spectator PNG recompressed losslessly; filtered pixel bytes verified unchanged. Pilot never received spectator view or evaluator output."
+}

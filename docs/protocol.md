@@ -79,6 +79,20 @@ first frame is ready). Image size, horizontal FOV and sample period are configur
 in `config/robot.json`. Camera output is downsampled portrait imagery and is not
 the Pixel camera HAL or an ARCore emulation. No depth or world pose is supplied.
 
+`GET /api/observation` returns `{ "state": {...}, "camera_png_base64": "..." }`.
+The state is sampled on the controller step that publishes that camera frame;
+later telemetry updates do not replace its state without a new frame. It returns
+503 until a frame is ready. The camera samples every configured whole number of
+physics steps (128 ms by default). Use this paired endpoint for model observations
+rather than separately fetching a moving image and current telemetry.
+
+`scripts/robot.py` provides a local operator CLI over these same endpoints. It
+retains the current gimbal/screen state, applies narrower experiment speed limits,
+refreshes a bounded drive command locally, and attempts an explicit stop in a
+`finally` block. If the connection is unavailable, the controller watchdog remains
+the fallback. Local action and image logs go to its `--run-dir`. This CLI is a
+transport helper, not a navigation controller.
+
 ## Browser behavior
 
 The panel sends commands only on interaction or while a drive button is held.

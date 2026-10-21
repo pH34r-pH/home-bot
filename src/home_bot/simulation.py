@@ -121,11 +121,12 @@ def run(root: Path, smoke=False):
     evaluator = SmokeEvaluator(robot, root, config) if smoke else None
     previous_wheels = None
     previous_face = None
-    last_camera_t = -float("inf")
+    iteration = 0
     print(f"Home Bot ready. Operator panel: http://{config.http_host}:{config.http_port}", flush=True)
     print("Keyboard (3D view focused): W/S drive, A/D turn, X stop, F face, C camera, H happy", flush=True)
     try:
         while robot.step(step) != -1:
+            iteration += 1
             t, wall = robot.getTime(), time.monotonic()
             if evaluator:
                 command = evaluator.command(t)
@@ -169,11 +170,10 @@ def run(root: Path, smoke=False):
             velocity = [0.0, 0.0] if previous_wheels is None else [(p - old) / (step / 1000) for p, old in zip(positions[:2], previous_wheels)]
             previous_wheels = positions[:2]
             frame = None
-            if t - last_camera_t >= camera_period / 1000:
+            if iteration % (camera_period // step) == 0:
                 bgra = camera.getImage()
                 if bgra:
                     frame = bgra_to_png(bgra, camera.getWidth(), camera.getHeight())
-                    last_camera_t = t
             state = {
                 "version": 1, "status": "running", "sim_time_s": t,
                 "wheels_rad": positions[:2], "wheel_velocity_rad_s": finite(velocity),

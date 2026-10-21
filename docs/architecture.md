@@ -55,8 +55,9 @@ Future pose estimation must compensate the entire chassis→pan→tilt→phone t
 including sensor offsets and gimbal measurement uncertainty.
 
 No GPS, perfect world pose, synthetic depth or built-in object recognition enters
-runtime observations. The smoke-test evaluator alone uses Supervisor ground truth
-to judge movement and stability. The interactive controller has `supervisor FALSE`.
+runtime observations. Smoke and pilot evaluators use Supervisor ground truth
+to judge movement and stability. The interactive/pilot robot controller has
+`supervisor FALSE`; `pilot.wbt` adds a separate evaluation-only Supervisor.
 
 ## Android and ARCore boundary
 

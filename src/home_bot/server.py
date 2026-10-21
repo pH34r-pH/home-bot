@@ -2,6 +2,7 @@
 """Loopback operator panel. Webots APIs stay on the simulation thread."""
 
 from dataclasses import asdict
+import base64
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
@@ -19,6 +20,7 @@ class Mailbox:
         self.pending: tuple[Command, float] | None = None
         self.state: dict = {"status": "starting"}
         self.camera: bytes = b""
+        self.observation: dict | None = None
 
     def submit(self, command: Command) -> None:
         with self.lock:
@@ -34,6 +36,7 @@ class Mailbox:
             self.state = state
             if camera is not None:
                 self.camera = camera
+                self.observation = {"state": state, "camera_png_base64": base64.b64encode(camera).decode("ascii")}
 
 
 def start_server(mailbox: Mailbox, config: RobotConfig) -> ThreadingHTTPServer:
@@ -71,6 +74,10 @@ def start_server(mailbox: Mailbox, config: RobotConfig) -> ThreadingHTTPServer:
                 with mailbox.lock:
                     frame = mailbox.camera
                 self.reply(200 if frame else 503, frame or b'{"error":"camera not ready"}', "image/png" if frame else "application/json")
+            elif path == "/api/observation":
+                with mailbox.lock:
+                    observation = mailbox.observation
+                self.reply(200 if observation else 503, json.dumps(observation or {"error": "camera not ready"}, allow_nan=False).encode())
             else:
                 self.reply(404, b'{"error":"not found"}')
 

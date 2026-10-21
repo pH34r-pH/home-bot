@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "status": "running",
+  "sim_time_s": 130.94400000000002,
+  "wheels_rad": [
+    19.688834521508994,
+    19.688834521508987
+  ],
+  "wheel_velocity_rad_s": [
+    -2.6201263381153694e-11,
+    -2.6423307986078726e-11
+  ],
+  "gimbal_rad": [
+    2.1584929421191472e-08,
+    -0.2000000270457354
+  ],
+  "phone_accelerometer_mps2": [
+    -4.285846152938705e-07,
+    9.618005893333722,
+    1.9312409126431422
+  ],
+  "phone_gyro_rps": [
+    0.00013879976565886796,
+    2.1197738031199074e-07,
+    4.1420525357493956e-08
+  ],
+  "imu_frame": "android_device_x_screen_right_y_up_z_out_of_screen",
+  "odometry": {
+    "x_m": 0.6694203737313047,
+    "y_m": -4.681494852746411e-16,
+    "yaw_rad": -2.323696042629728e-15
+  },
+  "applied_command": {
+    "linear_mps": 0.0,
+    "angular_rps": 0.0,
+    "pan_rad": 0.0,
+    "tilt_rad": -0.2,
+    "expression": "neutral",
+    "text": "HELLO",
+    "ttl_ms": 400
+  },
+  "applied_wheel_rad_s": [
+    0.0,
+    0.0
+  ],
+  "watchdog_expired": true
+}

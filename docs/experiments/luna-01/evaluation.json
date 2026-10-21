@@ -1,0 +1,69 @@
+{
+  "task_achieved": false,
+  "criteria": {
+    "near_target": false,
+    "base_faces_target": true,
+    "screen_faces_forward": true,
+    "screen_says_found": true,
+    "stopped": true,
+    "upright": true,
+    "no_above_floor_contacts": true
+  },
+  "sim_time_s": 271.37600000000003,
+  "truth_position_m": [
+    0.884307405922125,
+    1.1162299926485938e-11,
+    0.03391275032328695
+  ],
+  "truth_yaw_rad": -1.8390188881784022e-09,
+  "target_distance_m": 0.615692594077875,
+  "heading_error_rad": 1.8208892240670388e-09,
+  "above_floor_contact_events": [],
+  "sensor_state": {
+    "version": 1,
+    "status": "running",
+    "sim_time_s": 271.37600000000003,
+    "wheels_rad": [
+      49.54019162534747,
+      49.54019162533435
+    ],
+    "wheel_velocity_rad_s": [
+      0.0,
+      0.0
+    ],
+    "gimbal_rad": [
+      3.14159,
+      -3.72345920696304e-10
+    ],
+    "phone_accelerometer_mps2": [
+      7.091172769296237e-08,
+      9.809963621248059,
+      0.02671609607697862
+    ],
+    "phone_gyro_rps": [
+      -2.413281219927196e-15,
+      1.7107247091763916e-16,
+      3.807022556273387e-15
+    ],
+    "imu_frame": "android_device_x_screen_right_y_up_z_out_of_screen",
+    "odometry": {
+      "x_m": 1.6843665152615293,
+      "y_m": -2.6494517948903516e-15,
+      "yaw_rad": -4.24731218478207e-12
+    },
+    "applied_command": {
+      "linear_mps": 0.0,
+      "angular_rps": 0.0,
+      "pan_rad": 3.14159,
+      "tilt_rad": 0.0,
+      "expression": "neutral",
+      "text": "FOUND",
+      "ttl_ms": 400
+    },
+    "applied_wheel_rad_s": [
+      0.0,
+      0.0
+    ],
+    "watchdog_expired": true
+  }
+}

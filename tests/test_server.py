@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 from dataclasses import replace
+import base64
 import json
 from pathlib import Path
 import socket
@@ -65,6 +66,14 @@ class ServerTests(unittest.TestCase):
             self.assertIn(b"Home Bot", response.read())
         with self.assertRaises(HTTPError):
             urlopen(self.base + "/../../config/robot.json", timeout=2)
+
+    def test_observation_keeps_image_and_sample_state_together(self):
+        self.box.publish({"sim_time_s": 1}, b"frame-one")
+        self.box.publish({"sim_time_s": 2})
+        with urlopen(self.base + "/api/observation", timeout=2) as response:
+            observation = json.load(response)
+        self.assertEqual(observation["state"]["sim_time_s"], 1)
+        self.assertEqual(base64.b64decode(observation["camera_png_base64"]), b"frame-one")
 
 
 if __name__ == "__main__":

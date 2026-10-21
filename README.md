@@ -20,6 +20,12 @@ screen. A future arm/gripper will extend the platform to household tasks.
   four expressions, screen text, feedback telemetry, and wheel odometry.
 - A versioned JSON command API, speed limits, and a motion watchdog that expires
   on either simulation time or real time.
+- A model-independent [pilot CLI](docs/pilot-manual.md) with bounded movement,
+  paired camera/feedback observations, and an [experiment protocol](docs/experiment-protocol.md)
+  that keeps simulator evaluation separate from the model's observations.
+- A recorded [gpt-6-luna pilot experiment](docs/experiments/luna-01/README.md):
+  target approach and screen action worked; the complete task failed because the
+  robot stopped 61.6 cm away instead of within the requested 25–50 cm band.
 - Unit/API tests and an actual Webots maneuver test with images and a JSON report.
 
 **This is a simulator prototype.** Autonomous navigation, the native Android app,
@@ -64,6 +70,18 @@ the gimbal holds its last target; the physical system will need its own watchdog
 
 The server binds to loopback. The phone-to-simulation network bridge is a future
 milestone, so a physical phone cannot yet control this panel from another device.
+
+An agent with shell and image-view access can operate the same robot directly:
+
+```sh
+python scripts/robot.py observe
+python scripts/robot.py drive --linear 0.04 --seconds 2
+python scripts/robot.py stop
+```
+
+Read the [operator manual](docs/pilot-manual.md) before piloting. The CLI requires
+the running simulator; it does not include a model, a navigation policy or an MCP
+server. `pilot.wbt` adds a separate evaluator for controlled agent experiments.
 
 ### Tests
 
