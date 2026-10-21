@@ -1,0 +1,8 @@
+{
+  "name": "home-bot-speech-prototype",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "phonon-tts": "0.4.1"
+  }
+}

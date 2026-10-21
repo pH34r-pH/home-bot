@@ -13,3 +13,5 @@ Thumbs.db
 sim/webots/worlds/.*.wbproj
 local.properties
 *.log
+node_modules/
+android/speech-prototype/models/

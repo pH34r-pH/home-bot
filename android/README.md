@@ -1,4 +1,4 @@
-# Pixel brain — planned
+# Pixel brain
 
 The native Android app is not implemented in this first simulator milestone.
 Target: the owner's Google Pixel 5, upright portrait, rear camera forward in the
@@ -13,3 +13,11 @@ Use the actual phone to validate ARCore, camera intrinsics, sensor timestamps,
 USB/charging, long-running operation and Android lifecycle behavior. Desktop
 simulation does not validate those. Expression names are currently `neutral`,
 `happy`, `curious`, and `sleepy`, with a short text message.
+
+## Speech experiment
+
+The [Phonon voice lab](speech-prototype/README.md) is a separate browser-based
+prototype for running English TTS directly on the Pixel CPU. It serves pinned
+assets over USB, streams playback on the phone, and records test measurements.
+This does not implement the native brain, microphone recognition or hardware
+control. Follow its manual phone steps to establish physical-device evidence.

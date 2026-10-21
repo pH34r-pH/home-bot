@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home Bot Voice Lab</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<p class="eyebrow">HOME BOT · LOCAL VOICE</p><h1>Voice lab</h1>
+<p>Phonon 31M speaks locally on this device. The PC serves files and receives test measurements. Microphone access is off.</p>
+<label for="threads">CPU threads</label><select id="threads"><option>1</option><option selected>2</option><option>3</option></select>
+<button id="load">Load Phonon</button>
+<p id="status" role="status">Ready to load the English model.</p>
+<label for="text">Say something</label><textarea id="text" maxlength="500" rows="4">Hello. I am your home robot. My voice is running directly on this Pixel phone. Please turn left, then stop.</textarea>
+<div class="actions"><button id="speak" disabled>Speak</button><button id="stop" disabled>Stop</button></div>
+<button id="save" disabled>Save test WAV to PC</button>
+<p>This saves only the most recent synthesized speech. Use synthetic text for recorded tests.</p>
+<h2>Measurements</h2><pre id="metrics">No measurements yet.</pre>
+</main><script type="module" src="app.js"></script></body></html>
