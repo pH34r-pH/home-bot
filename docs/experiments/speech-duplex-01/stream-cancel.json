@@ -1,0 +1,23 @@
+{
+  "state": "cancelled",
+  "mode": "speak",
+  "elapsed_ms": 4767,
+  "keyguard_locked": true,
+  "samples": 36480,
+  "rms": 0.07029723036312008,
+  "peak": 0.42808279395103455,
+  "playback_head_frames": 32640,
+  "callbacks": 5,
+  "max_callback_samples": 30720,
+  "first_callback_ms": 1070,
+  "first_played_observed_ms": 2365,
+  "media_volume_before": 0,
+  "media_volume": 6,
+  "cancel_request_ms": 3606,
+  "frames_at_cancel": 31680,
+  "speaker_route": true,
+  "underruns": 0,
+  "native_ok": true,
+  "generation_and_queue_ms": 4767,
+  "host_requested_cancellation": true
+}

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Build the isolated debug WAV player using installed Android SDK tools, no Gradle."""
+"""Build the isolated native speech lab using installed Android SDK tools, no Gradle."""
 
 import argparse
 import os
@@ -25,12 +25,16 @@ def main():
     classes.mkdir(exist_ok=True); dex.mkdir(exist_ok=True)
     tools = args.sdk / "build-tools/36.0.0"
     android = args.sdk / "platforms/android-36/android.jar"
-    run("javac", "--release", "8", "-cp", android, "-d", classes, source / "PlaybackService.java")
+    run("javac", "--release", "8", "-cp", android, "-d", classes, *source.glob("*.java"))
     run(tools / "d8.bat", "--lib", android, "--min-api", "26", "--output", dex, *classes.rglob("*.class"))
     unsigned = output / "unsigned.apk"
     run(tools / "aapt2.exe", "link", "-I", android, "--manifest", source / "AndroidManifest.xml", "--version-code", "1", "--version-name", "0.1", "-o", unsigned)
     with zipfile.ZipFile(unsigned, "a", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.write(dex / "classes.dex", "classes.dex")
+        libraries = [ROOT / ".tools/phonon-native/out/arm64-v8a" / name for name in ("libptts_ffi.so", "libhomebot_speech.so")]
+        libraries += [ROOT / ".tools/sherpa/aar/jni/arm64-v8a" / name for name in ("libsherpa-onnx-c-api.so", "libonnxruntime.so")]
+        for library in libraries:
+            archive.write(library, f"lib/arm64-v8a/{library.name}")
     aligned, signed = output / "aligned.apk", output / "home-bot-speech-player-debug.apk"
     run(tools / "zipalign.exe", "-f", "4", unsigned, aligned)
     key = output / "test-only.keystore"

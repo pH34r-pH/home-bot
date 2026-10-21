@@ -1,0 +1,21 @@
+{
+  "state": "completed",
+  "mode": "listen",
+  "elapsed_ms": 13680,
+  "keyguard_locked": true,
+  "samples": 192000,
+  "rms": 0.0006202122511862329,
+  "peak": 0.00341796875,
+  "decode_ms": 2634.37969,
+  "sample_rate_hz": 16000,
+  "model_load_ms": 1483,
+  "capture_start_ms": 1520,
+  "requested_seconds": 12,
+  "recording_state": 3,
+  "input_device_type": 15,
+  "client_silenced": false,
+  "capture_wall_ms": 12114,
+  "text": "",
+  "pc_player_exit_code": 0,
+  "pc_audio_gain_percent": 70
+}

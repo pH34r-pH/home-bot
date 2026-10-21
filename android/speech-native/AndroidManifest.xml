@@ -4,9 +4,12 @@
   <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="36" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
   <application android:label="Home Bot Speech Lab" android:debuggable="true" android:allowBackup="false" android:usesCleartextTraffic="false">
     <service android:name=".PlaybackService" android:exported="true" android:permission="android.permission.DUMP" android:foregroundServiceType="mediaPlayback" />
+    <service android:name=".SpeechService" android:exported="true" android:permission="android.permission.DUMP" android:foregroundServiceType="mediaPlayback|microphone" />
   </application>
 </manifest>

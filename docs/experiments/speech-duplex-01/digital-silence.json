@@ -1,0 +1,14 @@
+{
+  "state": "completed",
+  "mode": "file",
+  "elapsed_ms": 1717,
+  "keyguard_locked": true,
+  "samples": 80000,
+  "rms": 0,
+  "peak": 0,
+  "decode_ms": 343.218934,
+  "feature_sample_rate_hz": 16000,
+  "model_load_ms": 1338,
+  "source_sample_rate_hz": 16000,
+  "text": ""
+}

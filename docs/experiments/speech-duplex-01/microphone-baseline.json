@@ -1,0 +1,20 @@
+{
+  "state": "completed",
+  "mode": "listen",
+  "elapsed_ms": 6698,
+  "keyguard_locked": true,
+  "samples": 80000,
+  "rms": 0.0005454864499818969,
+  "peak": 0.0025634765625,
+  "decode_ms": 854.203626,
+  "feature_sample_rate_hz": 16000,
+  "model_load_ms": 1568,
+  "capture_start_ms": 1606,
+  "requested_seconds": 5,
+  "capture_sample_rate_hz": 16000,
+  "recording_state": 3,
+  "input_device_type": 15,
+  "client_silenced": false,
+  "capture_wall_ms": 5038,
+  "text": ""
+}

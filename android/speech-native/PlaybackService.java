@@ -34,6 +34,7 @@ public final class PlaybackService extends Service {
   private volatile boolean cancelled, running;
   private volatile String cancellationReason = "cancelled";
   private int previousVolume = -1;
+  private boolean ownsSession;
 
   @Override public IBinder onBind(Intent intent) { return null; }
 
@@ -81,7 +82,11 @@ public final class PlaybackService extends Service {
 
   private void play() {
     try {
-      byte[] file = Files.readAllBytes(new File(getFilesDir(), "test.wav").toPath());
+      ownsSession = SpeechSession.acquire();
+      if (!ownsSession) { report("busy"); return; }
+      File input = new File(getFilesDir(), "test.wav");
+      if (input.length() < 46 || input.length() > 10 * 1024 * 1024) throw new IllegalArgumentException();
+      byte[] file = Files.readAllBytes(input.toPath());
       if (file.length < 46 || file.length > 10 * 1024 * 1024) throw new IllegalArgumentException();
       ByteBuffer header = ByteBuffer.wrap(file).order(ByteOrder.LITTLE_ENDIAN);
       if (!new String(file, 0, 4, StandardCharsets.US_ASCII).equals("RIFF") ||
@@ -131,6 +136,7 @@ public final class PlaybackService extends Service {
       if (focus != null) manager.abandonAudioFocusRequest(focus);
       if (previousVolume >= 0) manager.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
       running = false;
+      if (ownsSession) SpeechSession.release();
       stopForeground(STOP_FOREGROUND_REMOVE);
       stopSelf();
     }

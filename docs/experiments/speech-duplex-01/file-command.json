@@ -1,0 +1,14 @@
+{
+  "state": "completed",
+  "mode": "file",
+  "elapsed_ms": 1452,
+  "keyguard_locked": true,
+  "samples": 61440,
+  "rms": 0.04907344934055829,
+  "peak": 0.3055419921875,
+  "decode_ms": 159.951318,
+  "feature_sample_rate_hz": 16000,
+  "model_load_ms": 1212,
+  "source_sample_rate_hz": 24000,
+  "text": "'S TURN LEFT THEN STOP"
+}

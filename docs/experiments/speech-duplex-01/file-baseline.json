@@ -1,0 +1,14 @@
+{
+  "state": "completed",
+  "mode": "file",
+  "elapsed_ms": 1881,
+  "keyguard_locked": true,
+  "samples": 180480,
+  "rms": 0.06610515744481019,
+  "peak": 0.428070068359375,
+  "decode_ms": 521.730316,
+  "feature_sample_rate_hz": 16000,
+  "model_load_ms": 1323,
+  "source_sample_rate_hz": 24000,
+  "text": "O I AM YOUR HOME ROBOT MY VOICE IS RUNNING DIRECTLY ON THIS PIXELPHONE PLEASE TURN LEFT THEN STOP"
+}

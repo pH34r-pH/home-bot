@@ -27,8 +27,10 @@ screen. A future arm/gripper will extend the platform to household tasks.
   target approach and screen action worked; the complete task failed because the
   robot stopped 61.6 cm away instead of within the requested 25–50 cm band.
 - A [native Pixel speech prototype](android/speech-native/README.md): Phonon 31M
-  CPU synthesis and Android speaker-route playback verified over ADB while locked.
-  The standalone `say_phone.py` command does not require a browser or cloud API.
+  streaming speaker playback, sherpa-onnx WAV recognition, and bounded microphone
+  capture verified over ADB while locked. PC-to-Pixel acoustic recognition
+  recovered only partial words; it is not reliable for verbal control yet.
+  `phone_speech.py` requires no browser or cloud API.
 - Unit/API tests and an actual Webots maneuver test with images and a JSON report.
 
 **The robot remains a simulator prototype.** Autonomous navigation, the native Android robot brain,

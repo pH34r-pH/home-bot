@@ -1,0 +1,22 @@
+{
+  "state": "completed",
+  "mode": "listen",
+  "elapsed_ms": 9624,
+  "keyguard_locked": true,
+  "samples": 128000,
+  "rms": 0.003103612559281459,
+  "peak": 0.02685546875,
+  "decode_ms": 1803.161956,
+  "feature_sample_rate_hz": 16000,
+  "model_load_ms": 1458,
+  "capture_start_ms": 1481,
+  "requested_seconds": 8,
+  "capture_sample_rate_hz": 16000,
+  "recording_state": 3,
+  "input_device_type": 15,
+  "client_silenced": false,
+  "capture_wall_ms": 8042,
+  "text": "T THEN STOPPED",
+  "pc_player_exit_code": 0,
+  "pc_audio_gain_percent": 100
+}
