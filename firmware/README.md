@@ -48,8 +48,10 @@ Confirm servo power, connector mapping, wheel polarity, side servo safe travel,
 and cable slack before motion. Use short camera-observed wheel pulses to measure
 turn direction and speed. A 180° chassis turn (π radians) needs measured heading;
 it does not follow from any particular PWM value or elapsed time. Move the side
-servos only after the wheels are off. Keep this USB bench interface separate from
-the future Pixel-to-Mega transport and feedback protocol.
+servos only after the wheels are off: channel 2 (right, standard) takes a safe
+position target; channel 3 (left, continuous) takes a brief speed command. Equal
+pulse widths do not imply equal angles. Keep this USB bench interface separate
+from the future Pixel-to-Mega transport and feedback protocol.
 
 See the [physical bench results](../docs/experiments/mega-pwm-01/README.md) for
 readback, rejected-command tests, an unloaded channel pulse, and the owner-confirmed

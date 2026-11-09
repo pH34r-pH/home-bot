@@ -7,21 +7,33 @@
 | Base | Parallax Boe-Bot chassis; original BASIC Stamp 2 replaced |
 | Actuator controller | Arduino Mega |
 | PWM shield | Adafruit 16-channel PCA9685 shield, I²C address `0x40` verified |
-| Drive | Two matched continuous-rotation wheel servos, position feedback reported |
+| Drive | Two Parallax continuous-rotation wheel servos |
 | Speed | Owner estimates about 1 mph; not measured |
-| Gimbal | Two similarly sized/voltage feedback actuators, described as “stepper-servos”; existing plate formerly carried ultrasonic sensors |
+| Side actuators | Parallax standard servo on the right; Parallax continuous-rotation servo on the left |
 | Brain/sensors | Google Pixel 5, upright portrait, rear cameras forward in driving pose |
 | Display | Phone can turn to show its screen, expressions and text |
 | Future | Multi-jointed arm with a claw/hand; plant watering and toy collection |
 
-Original kit membership alone does not establish the servo model. Honor the
-reported feedback capability while leaving the signal type and calibration open.
-Do not assume feedback is directly readable through the stock Arduino Servo library.
+All four servos were purchased around 2014. Exact labels and external feedback
+wiring are unverified. Earlier reports of feedback do not establish a readable
+position signal; a standard servo's internal position control alone supplies no
+measurement to the Mega.
 
-For the USB bench setup, the owner identified shield channels 0 = right wheel,
-1 = left wheel, 2 = right side, and 3 = left side. These are PCA9685 channel
-numbers, not Mega pin numbers. Wheel polarity/neutral and side servo travel
-remain unmeasured.
+| PCA9685 channel | Actuator | Command meaning |
+| --- | --- | --- |
+| 0 | Right wheel, continuous | Direction and speed |
+| 1 | Left wheel, continuous | Direction and speed |
+| 2 | Right side, standard | Position target |
+| 3 | Left side, continuous | Direction and speed |
+
+The era-appropriate candidates are Parallax [900-00008 continuous](https://www.mouser.com/datasheet/2/321/900-00008-Continuous-Rotation-Servo-Documentation--273045.pdf)
+and [900-00005 analog standard](https://docs.rs-online.com/0e85/0900766b8123f8d7.pdf).
+Both manufacturer guides specify 4–6 V and around 140 mA per servo moving without
+load at 6 V. This is not a stall-current rating. A separate regulated 5 V supply
+on shield V+ and GND is the bench starting point after checking the labels, with
+the Mega on USB for serial. [Adafruit lists 5 V / 2 A as an example supply](https://learn.adafruit.com/adafruit-16-channel-pwm-slash-servo-shield/shield-connections);
+check voltage under load and available current before relying on it. Do not bridge
+V+ to the Mega's 5 V rail.
 
 ## Model parameters
 
@@ -37,10 +49,10 @@ Interactive driving defaults to 0.12 m/s. Pan 0..π and tilt ±0.6 rad are simul
 design limits, not evidence of real travel. At pan zero the rear camera looks
 along chassis +X; at pan π the screen faces chassis +X.
 
-The physical ability to make a half-turn depends on servo travel, the mounting
-angle, cable routing and clearance. Feedback does not establish the travel range.
-The model's gimbal uses positional rotary joints without choosing whether the
-actual hardware is a hobby servo or a stepper assembly.
+The model's gimbal uses positional rotary joints. A continuous servo cannot use
+that same position interface without an external position measurement and control
+loop. The eventual gimbal's actuator mapping, travel, cable clearance and ability
+to present the screen are unverified.
 
 ## Measurements before physical control
 

@@ -111,15 +111,15 @@ close the other prototype instance or change `http_port` in `config/robot.json`.
 
 ## Hardware assumptions
 
-Owner-confirmed: Arduino Mega, Boe-Bot chassis, matched continuous-rotation wheel
-servos with position feedback, two similarly sized feedback actuators for pan and
-tilt, and an upright Pixel 5. Approximate top speed is 1 mph; it is not measured.
+Owner-confirmed: Arduino Mega, Boe-Bot chassis, two Parallax continuous wheel
+servos, a right-side standard servo, and a left-side continuous servo. The target
+mount holds the Pixel 5 upright. Approximate top speed is 1 mph; it is not measured.
 
 The actuator models, electrical feedback signals, mechanical travel, wheel
 dimensions, torque, gimbal geometry, and mass distribution still need confirmation.
 The simulation's **0–180° pan travel is a design target**, not a verified capability
-of the existing mount. “Stepper-servo” is recorded as the owner's description;
-the electrical interface is not assumed. No pinout or pulse calibration is guessed.
+of the existing mount. See the [hardware profile](docs/hardware.md) for the actual
+shield channel mapping and the measurements still needed.
 
 Edit `config/robot.json` for controller limits and camera settings, then run
 `python scripts/build_worlds.py` and reload the world. The generator passes these
