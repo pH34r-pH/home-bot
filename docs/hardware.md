@@ -6,6 +6,7 @@
 | --- | --- |
 | Base | Parallax Boe-Bot chassis; original BASIC Stamp 2 replaced |
 | Actuator controller | Arduino Mega |
+| PWM shield | Adafruit 16-channel PCA9685 shield, I²C address `0x40` verified |
 | Drive | Two matched continuous-rotation wheel servos, position feedback reported |
 | Speed | Owner estimates about 1 mph; not measured |
 | Gimbal | Two similarly sized/voltage feedback actuators, described as “stepper-servos”; existing plate formerly carried ultrasonic sensors |
@@ -16,6 +17,11 @@
 Original kit membership alone does not establish the servo model. Honor the
 reported feedback capability while leaving the signal type and calibration open.
 Do not assume feedback is directly readable through the stock Arduino Servo library.
+
+For the USB bench setup, the owner identified shield channels 0 = right wheel,
+1 = left wheel, 2 = right side, and 3 = left side. These are PCA9685 channel
+numbers, not Mega pin numbers. Wheel polarity/neutral and side servo travel
+remain unmeasured.
 
 ## Model parameters
 

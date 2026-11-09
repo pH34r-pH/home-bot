@@ -32,10 +32,12 @@ screen. A future arm/gripper will extend the platform to household tasks.
   recovered only partial words; it is not reliable for verbal control yet.
   `phone_speech.py` requires no browser or cloud API.
 - Unit/API tests and an actual Webots maneuver test with images and a JSON report.
+- [USB serial bench firmware](firmware/README.md) for the Mega and Adafruit PWM
+  shield, with timed commands and hardware readback of disabled outputs.
 
-**The robot remains a simulator prototype.** Autonomous navigation, the native Android robot brain,
-Pixel-to-Mega transport, servo feedback decoding, and physical firmware are not
-implemented yet. No commands are sent to hardware.
+Autonomous navigation remains in simulation. The USB bench interface is separate
+from the simulator and the planned Android robot brain, Pixel-to-Mega transport,
+and servo feedback decoding.
 
 ## Run the prototype
 

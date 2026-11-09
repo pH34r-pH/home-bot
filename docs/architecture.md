@@ -20,8 +20,9 @@ flowchart LR
 ```
 
 Today, a Python Webots controller and a loopback browser panel exercise the
-command/observation contract. The Android app and hardware adapters are future
-work. The control contract is reusable across platforms; Python code is not
+command/observation contract. The [Mega USB bench adapter](../firmware/README.md)
+provides separate timed PWM commands for calibration. The Android robot app and
+the Pixel-to-Mega link are future work. The control contract is reusable across platforms; Python code is not
 presented as a library that automatically runs in native Kotlin.
 
 The future Android app should separate `SensorSource`, `ActuatorSink`, behavior,
@@ -81,5 +82,6 @@ Commands are complete snapshots, and omitted motion values are zero.
 The motion watchdog uses both monotonic real time and simulation time. Expiry
 sets wheel targets to zero while retaining gimbal pose and screen state. Motor
 acceleration means a zero target is not an instantaneous physical stop. The
-future Mega firmware needs an independent watchdog, feedback fault handling and
-explicit arm/stop behavior. No hardware is driven by this prototype.
+Mega bench firmware independently expires each PWM pulse and provides arm/stop
+commands. Feedback fault handling and a hardware cutoff remain future work.
+The simulator never sends these serial commands.
