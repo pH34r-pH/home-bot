@@ -18,7 +18,8 @@ python scripts/mega_pwm.py --port COM4 status
 ```
 
 Substitute the actual port. `status` sends `STOP` and reads the prescaler and all
-16 channel off bits back from the chip; `PWM 0x40 121 FFFF` is the expected result.
+16 channel off bits back from the chip, and checks the oscillator and output
+mode settings. `PWM 0x40 121 FFFF` is the expected result.
 The sketch opens at 115200 baud, 8N1. Commands and replies are ASCII lines.
 
 | Command | Result |
@@ -29,6 +30,10 @@ The sketch opens at 115200 baud, 8N1. Commands and replies are ASCII lines.
 | `ARM` | Authorize one pulse command, expiring after 2 seconds |
 | `PULSE <ms> <channel> <us> [<channel> <us>]` | One or two distinct channels; `OK PULSE`, then `DONE OFF` |
 | `STOP` | Clear arming and disable all outputs; `OK STOP` on successful I²C write |
+
+The firmware reads each enabled channel's PWM registers back before acknowledging
+its pulse. A mismatch aborts the pulse and latches a fault. Register readback
+does not measure the electrical waveform or physical position.
 
 The bench bounds are 20–1000 ms, channels 0–15, and nominal pulses 1400–1600 µs at
 approximately 50 Hz. These are command limits, not measured neutral, angle, or
@@ -54,5 +59,6 @@ pulse widths do not imply equal angles. Keep this USB bench interface separate
 from the future Pixel-to-Mega transport and feedback protocol.
 
 See the [physical bench results](../docs/experiments/mega-pwm-01/README.md) for
-readback, rejected-command tests, an unloaded channel pulse, and the owner-confirmed
-channel map. The USB-only setup did not establish servo power or motion.
+readback, rejected-command tests, and powered side servo motion. The wheels spun
+according to the owner, but the missing tire bands prevented the turn test from
+establishing a measured change in heading.

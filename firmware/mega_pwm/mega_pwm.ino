@@ -39,11 +39,14 @@ bool allOff() {
 bool setPulse(uint8_t channel, uint16_t microseconds) {
   // Nominal 25 MHz oscillator and prescale=121. Actual pulse width is unmeasured.
   uint16_t ticks = (microseconds * 25UL + 61) / 122;
+  uint8_t reg = 0x06 + 4 * channel;
   Wire.beginTransmission(ADDRESS);
-  Wire.write(0x06 + 4 * channel);
+  Wire.write(reg);
   Wire.write(0); Wire.write(0);
   Wire.write(ticks & 0xff); Wire.write(ticks >> 8);
-  return Wire.endTransmission() == 0;
+  return Wire.endTransmission() == 0 &&
+      readRegister(reg) == 0 && readRegister(reg + 1) == 0 &&
+      readRegister(reg + 2) == (ticks & 0xff) && readRegister(reg + 3) == (ticks >> 8);
 }
 
 bool elapsed(uint32_t now, uint32_t deadline) { return (int32_t)(now - deadline) >= 0; }
@@ -62,9 +65,9 @@ bool number(const char *token, uint16_t low, uint16_t high, uint16_t &value) {
 }
 
 void reject(const __FlashStringHelper *reason) {
-  allOff();
+  bool stopped = allOff();
   Serial.print(F("ERR "));
-  Serial.println(healthy ? reason : F("I2C"));
+  Serial.println(stopped ? reason : F("I2C"));
 }
 
 void command() {
@@ -90,7 +93,10 @@ void command() {
       if (off < 0) { prescale = -1; break; }
       if (off & 0x10) mask |= uint16_t(1) << i;
     }
-    if (prescale != 121 || mask != 0xffff) { healthy = false; reject(F("READBACK")); return; }
+    int mode1 = readRegister(0x00), mode2 = readRegister(0x01);
+    if (prescale != 121 || mask != 0xffff || mode1 < 0 || (mode1 & 0x70) != 0x20 || mode2 != 0x04) {
+      healthy = false; reject(F("READBACK")); return;
+    }
     Serial.println(F("PWM 0x40 121 FFFF"));
     return;
   }
@@ -117,7 +123,7 @@ void command() {
   // The deadline is set before the first write, even for paired channels.
   stopAt = millis() + duration;
   for (uint8_t i = 0; i < count; ++i) {
-    if (!setPulse(channels[i], widths[i])) { healthy = false; reject(F("I2C")); return; }
+    if (!setPulse(channels[i], widths[i])) { healthy = false; reject(F("READBACK")); return; }
   }
   active = true;
   Serial.println(F("OK PULSE"));
