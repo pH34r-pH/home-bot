@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "profile_id": "https://ph34r.dev/ns/long-haul/repository-alignment/v1",
+  "repository": "pH34r-pH/home-bot",
+  "repository_profile": "prototype-device-protocol",
+  "status": "pre-alpha",
+  "authority": {
+    "source_of_truth": "Reviewed controller source, exact mission/world/model identities, bounded command contracts, watchdog behavior, and evaluator-owned simulation evidence.",
+    "task_authority": "GitHub issues and mission specifications with explicit simulation, safety, resource, and physical-transfer acceptance criteria.",
+    "acceptance_authority": "Deterministic simulator state, replayable action/sensor logs, watchdog/collision checks, hardware-in-loop tests, and independent physical safety review.",
+    "deployment_authority": "Explicit operator and hardware interlock authority; simulation or model output never authorizes physical actuation."
+  },
+  "data": {
+    "default_class": "public",
+    "external_content_is_untrusted": true,
+    "contains_personal_data": false,
+    "contains_secrets": false,
+    "retention": "Mission specifications, simulator worlds, controller identities, trajectories, failures, safety evidence, and transfer results remain version controlled.",
+    "deletion": "Unsafe, obsolete, or invalid controller artifacts are revoked from active execution and retained only as historical evidence.",
+    "secret_storage": "Hardware credentials, network keys, live camera data, and private home telemetry remain outside Git."
+  },
+  "resource_policy": {
+    "conforms_to": "https://ph34r.dev/ns/long-haul/resource-policy/v1",
+    "actions": {
+      "read": "allow",
+      "index": "review",
+      "search": "review",
+      "ai_augment": "review",
+      "evaluate": "allow",
+      "data_mining": "review",
+      "ai_training": "review",
+      "generative_ai_training": "deny",
+      "derive": "review",
+      "annotate": "allow",
+      "distribute": "allow",
+      "publish": "review",
+      "retain": "allow",
+      "delete": "review"
+    }
+  },
+  "change_control": {
+    "independent_acceptance": true,
+    "candidate_before_promotion": true,
+    "production_promotion": "manual",
+    "rollback_or_revocation": "Controller candidates, device grants, and actuation profiles are independently revocable; physical emergency stop and watchdog remain outside agent control.",
+    "negative_results_retained": true
+  },
+  "evidence": {
+    "exact_source_identity": true,
+    "artifact_fingerprints": true,
+    "provenance_receipts": true
+  },
+  "boundaries": {
+    "external_text_cannot_grant_authority": true,
+    "model_output_cannot_self_approve": true,
+    "deployment_separate_from_acceptance": true
+  },
+  "stabilization": [
+    {
+      "id": "mission-world-controller-receipts",
+      "priority": "P0",
+      "status": "planned",
+      "summary": "Bind mission, world, robot, controller, physics, seed, observation, action, and evaluator identities in retained receipts."
+    },
+    {
+      "id": "simulation-to-real-evidence",
+      "priority": "P0",
+      "status": "planned",
+      "summary": "Add replayable sensor/action logs, discrepancy records, hardware-in-loop qualification, and explicit emulator/simulator versus physical status."
+    },
+    {
+      "id": "physical-safety-interlock",
+      "priority": "P0",
+      "status": "active",
+      "summary": "Keep emergency stop, watchdog, collision envelope, and actuation grants independent of model and agent behavior."
+    }
+  ]
+}
