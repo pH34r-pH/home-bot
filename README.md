@@ -101,9 +101,11 @@ python scripts/run_smoke.py --webots /path/to/webots
 For Windows, pass the full `webots.exe` path to `--webots`.
 The smoke test runs a separate world, checks driving, turning, gimbal feedback,
 forward camera orientation, phone IMU axes, screen state, watchdog stop, and base
-stability. Evidence goes into the ignored `artifacts/` folder. It closes its own
-Webots instance on completion. Core tests run in GitHub Actions; simulation testing
-is local because it needs the Webots runtime and an OpenGL-capable environment.
+stability. Each attempt gets a fresh folder under the ignored `artifacts/`
+directory. The [simulation evidence guide](docs/validation.md#replayable-smoke-evidence)
+covers the receipt and offline motion replay. The test closes its own Webots
+instance on completion. Core tests run in GitHub Actions. The local smoke test
+requires Webots and an OpenGL-capable environment.
 
 If Webots cannot find Python, choose your Python executable under
 **Tools → Preferences → General → Python command**. If port 8765 is occupied,
