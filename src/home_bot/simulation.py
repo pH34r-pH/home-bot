@@ -4,7 +4,9 @@
 from dataclasses import asdict
 import json
 import math
+import os
 from pathlib import Path
+import sys
 import time
 
 from .config import RobotConfig
@@ -13,6 +15,7 @@ from .face import draw_face
 from .geometry import look_at
 from .png import bgra_to_png
 from .server import Mailbox, start_server
+from .smoke_trace import SMOKE_STOP_S
 
 
 def finite(values):
@@ -22,10 +25,10 @@ def finite(values):
 class SmokeEvaluator:
     """Closed, deterministic maneuver sequence, with no truth given to navigation."""
 
-    def __init__(self, robot, root: Path, config: RobotConfig):
+    def __init__(self, robot, path: Path, config: RobotConfig, trace):
         self.robot, self.config = robot, config
-        self.path = root / "artifacts"
-        self.path.mkdir(exist_ok=True)
+        self.path = path
+        self.trace = trace
         self.samples = {}
 
     def command(self, t):
@@ -43,7 +46,11 @@ class SmokeEvaluator:
             return Command(linear_mps=0.06, pan_rad=math.pi, tilt_rad=0.35, expression="happy", text="HELLO HOME")
         return None
 
-    def observe(self, state, camera):
+    def observe(self, state, camera, command, wall, step):
+        record = {"step": step, "wall_time_s": wall,
+                  "accepted_command": asdict(command) if command is not None else None,
+                  "observation": state}
+        self.trace.write(json.dumps(record, allow_nan=False, separators=(",", ":")) + "\n")
         t = state["sim_time_s"]
         for name, when in (("settled", 0.95), ("straight", 2.95), ("turned", 3.95),
                            ("face", 7.45), ("tilt", 8.95), ("moving", 9.45), ("stopped", 10.9)):
@@ -58,12 +65,16 @@ class SmokeEvaluator:
     def finish(self, camera, display):
         a, b = self.samples["settled"], self.samples["straight"]
         stopped = self.samples["stopped"]
+        body = self.robot.getSelf()
+        terminal_truth = {"position_m": list(body.getPosition()), "orientation": list(body.getOrientation()),
+                          "velocity": list(body.getVelocity())}
+        terminal_time = self.robot.getTime()
         png_path = self.path / "rear-camera.png"
         camera.saveImage(str(png_path), 100)
         image = display.imageCopy(0, 0, display.getWidth(), display.getHeight())
         display.imageSave(image, str(self.path / "phone-screen.png"))
         display.imageDelete(image)
-        point = self.robot.getSelf().getPosition()
+        point = terminal_truth["position_m"]
         position = [point[0] + 0.6, point[1] + 0.8, 0.55]
         viewpoint = self.robot.getFromDef("INSPECTION_VIEW")
         viewpoint.getField("position").setSFVec3f(position)
@@ -87,7 +98,9 @@ class SmokeEvaluator:
             "camera_faces_forward_target": a["center_rgb"][0] > 1.5 * a["center_rgb"][1] and a["center_rgb"][0] > 1.8 * a["center_rgb"][2],
             "android_imu_upright": abs(a["phone_accelerometer_mps2"][1] - 9.81) < 0.3 and abs(a["phone_accelerometer_mps2"][2]) < 0.3,
         }
-        report = {"passed": all(checks.values()), "checks": checks, "samples": self.samples}
+        report = {"passed": all(checks.values()), "checks": checks, "samples": self.samples,
+                  "controller_python": sys.version.split()[0], "terminal_sim_time_s": terminal_time,
+                  "terminal_truth": terminal_truth}
         (self.path / "smoke-report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
         print("HOME_BOT_SMOKE " + json.dumps(checks), flush=True)
         self.robot.simulationQuit(0 if report["passed"] else 1)
@@ -118,7 +131,12 @@ def run(root: Path, smoke=False):
     odometry = Odometry()
     mailbox = Mailbox()
     server = None if smoke else start_server(mailbox, config)
-    evaluator = SmokeEvaluator(robot, root, config) if smoke else None
+    trace, evaluator = None, None
+    if smoke:
+        path = Path(os.environ.get("HOME_BOT_SMOKE_OUTPUT", str(root / "artifacts")))
+        path.mkdir(parents=True, exist_ok=True)
+        trace = (path / "smoke-trace.jsonl").open("w", buffering=1, encoding="utf-8", newline="\n")
+        evaluator = SmokeEvaluator(robot, path, config, trace)
     previous_wheels = None
     previous_face = None
     iteration = 0
@@ -187,11 +205,13 @@ def run(root: Path, smoke=False):
             }
             mailbox.publish(state, frame)
             if evaluator:
-                evaluator.observe(state, camera)
-                if t >= 11:
+                evaluator.observe(state, camera, command, wall, iteration)
+                if t >= SMOKE_STOP_S:
                     evaluator.finish(camera, display)
                     break
     finally:
+        if trace:
+            trace.close()
         if server:
             server.shutdown()
             server.server_close()
