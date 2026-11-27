@@ -22,6 +22,15 @@ def _close(actual, expected):
     return math.isclose(_number(actual), expected, rel_tol=1e-12, abs_tol=1e-12)
 
 
+def write_motion_record(trace, state, command, wall, step, *, accepted_wall=None):
+    record = {"step": step, "wall_time_s": wall,
+              "accepted_command": asdict(command) if command is not None else None,
+              "observation": state}
+    if command is not None and accepted_wall is not None:
+        record["accepted_wall_time_s"] = accepted_wall
+    trace.write(json.dumps(record, allow_nan=False, separators=(",", ":")) + "\n")
+
+
 def replay_motion(path: Path, config: RobotConfig, step_ms: int) -> dict:
     latch = CommandLatch(config.command_ttl_ms)
     odometry = Odometry()
@@ -39,7 +48,8 @@ def replay_motion(path: Path, config: RobotConfig, step_ms: int) -> dict:
                 if tick["step"] != count or not _close(t, count * step_ms / 1000) or wall < previous_wall:
                     raise ValueError("invalid step or clock sequence")
                 if tick["accepted_command"] is not None:
-                    latch.accept(Command.parse({"version": 1, **tick["accepted_command"]}, config), t, wall)
+                    accepted_wall = _number(tick.get("accepted_wall_time_s", wall))
+                    latch.accept(Command.parse({"version": 1, **tick["accepted_command"]}, config), t, accepted_wall)
                 command, expired = latch.sample(t, wall)
                 if state["applied_command"] != asdict(command) or state["watchdog_expired"] is not expired:
                     raise ValueError("applied command or watchdog mismatch")

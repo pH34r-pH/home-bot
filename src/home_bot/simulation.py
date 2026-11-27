@@ -15,7 +15,7 @@ from .face import draw_face
 from .geometry import look_at
 from .png import bgra_to_png
 from .server import Mailbox, start_server
-from .smoke_trace import SMOKE_STOP_S
+from .smoke_trace import SMOKE_STOP_S, write_motion_record
 
 
 def finite(values):
@@ -47,10 +47,7 @@ class SmokeEvaluator:
         return None
 
     def observe(self, state, camera, command, wall, step):
-        record = {"step": step, "wall_time_s": wall,
-                  "accepted_command": asdict(command) if command is not None else None,
-                  "observation": state}
-        self.trace.write(json.dumps(record, allow_nan=False, separators=(",", ":")) + "\n")
+        write_motion_record(self.trace, state, command, wall, step)
         t = state["sim_time_s"]
         for name, when in (("settled", 0.95), ("straight", 2.95), ("turned", 3.95),
                            ("face", 7.45), ("tilt", 8.95), ("moving", 9.45), ("stopped", 10.9)):
@@ -137,6 +134,8 @@ def run(root: Path, smoke=False):
         path.mkdir(parents=True, exist_ok=True)
         trace = (path / "smoke-trace.jsonl").open("w", buffering=1, encoding="utf-8", newline="\n")
         evaluator = SmokeEvaluator(robot, path, config, trace)
+    elif pilot_trace := os.environ.get("HOME_BOT_PILOT_TRACE"):
+        trace = Path(pilot_trace).open("x", buffering=1, encoding="utf-8", newline="\n")
     previous_wheels = None
     previous_face = None
     iteration = 0
@@ -146,6 +145,7 @@ def run(root: Path, smoke=False):
         while robot.step(step) != -1:
             iteration += 1
             t, wall = robot.getTime(), time.monotonic()
+            command, accepted_wall = None, wall
             if evaluator:
                 command = evaluator.command(t)
                 if command:
@@ -153,7 +153,8 @@ def run(root: Path, smoke=False):
             else:
                 pending = mailbox.take()
                 if pending:
-                    latch.accept(pending[0], t, pending[1])
+                    command, accepted_wall = pending
+                    latch.accept(command, t, accepted_wall)
                 key = keyboard.getKey()
                 latest_key = key
                 while key != -1:
@@ -172,7 +173,8 @@ def run(root: Path, smoke=False):
                     elif key == ord("H"):
                         current.update(expression="happy", text="HELLO")
                     if key in drive or key in (ord("F"), ord("C"), ord("H")):
-                        latch.accept(Command.parse(current, config), t, wall)
+                        command, accepted_wall = Command.parse(current, config), wall
+                        latch.accept(command, t, accepted_wall)
             applied, expired = latch.sample(t, wall)
             speeds = wheel_speeds(applied, config)
             for motor, velocity in zip(wheels, speeds):
@@ -209,6 +211,8 @@ def run(root: Path, smoke=False):
                 if t >= SMOKE_STOP_S:
                     evaluator.finish(camera, display)
                     break
+            elif trace:
+                write_motion_record(trace, state, command, wall, iteration, accepted_wall=accepted_wall)
     finally:
         if trace:
             trace.close()
