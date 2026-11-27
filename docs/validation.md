@@ -53,3 +53,32 @@ Offline replay checks recorded controller behavior. A fresh Webots run exercises
 the physics, rendered camera and independent evaluator. Webots evidence applies
 to simulation. Hardware-in-loop and physical acceptance require their own
 measured calibration, actuator permits, independent stop paths and test receipts.
+
+## Compare two retained pilot attempts
+
+Keep each completed bundle, its attempt ID, and its checked receipt digest in
+the evidence store. Use the checkout with the input files recorded by both
+receipts and keep the bundle directories stable during verification.
+[Pilot recording and replay](experiment-protocol.md#record-a-repeatable-simulation-attempt)
+
+```sh
+python scripts/compare_pilots.py artifacts/reference artifacts/candidate \
+  --reference-receipt-sha256 "$REFERENCE_RECEIPT_SHA256" \
+  --candidate-receipt-sha256 "$CANDIDATE_RECEIPT_SHA256"
+```
+
+The command replays both independently pinned bundles and records their
+runtime identities, evaluator outcomes, and separate digests for the pilot
+and evaluator files. It compares the requested actions, the controller's
+applied commands and watchdog state at each step, and the evaluator's
+sampling grid. The report includes maximum position and wrapped heading
+deltas when all three align. Keep both outcomes and the alignment result
+when the runs differ.
+
+Use the same scripted actions and unchanged world, seed, and controller
+when comparing simulator environments. Record any changed timing or
+controls before interpreting the pose results. A completed recording with
+a failed mission remains a valid negative outcome. Retain a timeout or
+interruption with its original receipt and select two completed recordings
+for the comparison. Physical calibration and operating approval require
+their own evidence.
