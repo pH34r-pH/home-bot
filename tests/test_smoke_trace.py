@@ -48,6 +48,12 @@ class SmokeTraceTests(unittest.TestCase):
             "steps": 2, "final_sim_time_s": 0.032, "watchdog_expired_steps": 1,
         })
 
+    def test_replays_command_acceptance_time_distinct_from_tick_time(self):
+        rows = deepcopy(self.rows)
+        rows[0]["accepted_wall_time_s"] = 99.99
+        rows[1]["wall_time_s"] = 100.045
+        self.assertEqual(self.replay(rows)["watchdog_expired_steps"], 1)
+
     def test_rejects_corrupt_control_evidence(self):
         for field, value, reason in (
             ("watchdog_expired", False, "watchdog mismatch"),

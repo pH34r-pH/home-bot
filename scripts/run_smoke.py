@@ -42,8 +42,8 @@ def input_digests():
     return {path.relative_to(ROOT).as_posix(): digest(path) for path in inputs}
 
 
-def world_settings():
-    text = WORLD.read_text(encoding="utf-8")
+def world_settings(world=WORLD):
+    text = world.read_text(encoding="utf-8")
     return {
         name: int(re.search(rf"^\s*{name} (\d+)\s*$", text, re.MULTILINE)[1])
         for name in ("basicTimeStep", "randomSeed")
@@ -54,25 +54,25 @@ def git_output(*args):
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
 
 
-def new_output(path):
+def new_output(path, *, prefix="smoke-"):
     if path is not None:
         path = path.resolve()
         path.mkdir(parents=True)
         return path
     directory = ROOT / "artifacts"
     directory.mkdir(exist_ok=True)
-    return Path(tempfile.mkdtemp(prefix="smoke-", dir=directory))
+    return Path(tempfile.mkdtemp(prefix=prefix, dir=directory))
 
 
-def run_webots(executable, output, timeout):
-    command = [str(executable), "--batch", "--minimize", "--mode=fast", "--stdout", "--stderr", str(WORLD)]
+def run_webots(executable, output, timeout, *, world=WORLD, mode="fast", settings=None, log_name="webots-smoke.log"):
+    command = [str(executable), "--batch", "--minimize", f"--mode={mode}", "--stdout", "--stderr", str(world)]
     options = {"start_new_session": True}
     if os.name == "nt":
         startup = subprocess.STARTUPINFO()
         startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         options = {"startupinfo": startup}
-    env = {**os.environ, "HOME_BOT_SMOKE_OUTPUT": str(output)}
-    with (output / "webots-smoke.log").open("w", encoding="utf-8") as log:
+    env = {**os.environ, "HOME_BOT_SMOKE_OUTPUT": str(output), **(settings or {})}
+    with (output / log_name).open("w", encoding="utf-8") as log:
         process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, cwd=ROOT, env=env, **options)
         try:
             return process.wait(timeout=timeout)
@@ -111,18 +111,22 @@ def verify_bundle(directory):
     return replay
 
 
-def run_smoke(executable, output_path, timeout):
-    subprocess.run([sys.executable, str(ROOT / "scripts/build_worlds.py"), "--check"], check=True)
+def webots_identity(executable):
     version = subprocess.run([str(executable), "--version"], check=True, capture_output=True, text=True, timeout=15)
     match = re.search(r"(?mi)^Webots(?: version:)? (R\d{4}[a-z][^\r\n]*)$", version.stdout + "\n" + version.stderr)
     if not match:
         raise ValueError("Webots did not report its version")
+    return {"webots_version": match[1], "webots_launcher_sha256": digest(executable),
+            "runner_python": platform.python_version(), "platform": platform.platform()}
+
+
+def run_smoke(executable, output_path, timeout):
+    subprocess.run([sys.executable, str(ROOT / "scripts/build_worlds.py"), "--check"], check=True)
     receipt = {
         "schema_version": 1, "kind": "webots_smoke", "source_commit": git_output("rev-parse", "HEAD"),
         "source_dirty": bool(git_output("status", "--porcelain")), "inputs_sha256": input_digests(),
         "world": world_settings(),
-        "runtime": {"webots_version": match[1], "webots_launcher_sha256": digest(executable),
-                    "runner_python": platform.python_version(), "platform": platform.platform()},
+        "runtime": webots_identity(executable),
     }
     output = new_output(output_path)
     receipt["status"] = "failed"

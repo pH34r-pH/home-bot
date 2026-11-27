@@ -19,4 +19,32 @@ The evaluator records ground truth privately at roughly 0.25 s intervals and che
 
 This is a simple visible-target task in a synthetic room, not validation of unattended home operation, unseen-room navigation, Android integration or physical transfer. No object dimensions are supplied to the pilot for visual range estimation.
 
-To reproduce, set `HOME_BOT_EXPERIMENT_DIR` to a fresh absolute directory outside the pilot's allowed observations, launch `sim/webots/worlds/pilot.wbt` in Webots with `--batch --mode=realtime --stdout --stderr`, then give a fresh pilot the manual and task. Reusing a directory is rejected so old logs and finish signals cannot contaminate a new attempt. To capture the final spectator image and end evaluation, the experiment operator creates `finish.request` in the evaluator directory after the pilot finishes. The simulation remains open.
+## Record a repeatable simulation attempt
+
+```sh
+python scripts/run_pilot.py --webots /path/to/webots --pilot-label reviewed-pilot --output artifacts/pilot-attempt-01
+```
+
+In a separate shell, follow [the pilot manual](pilot-manual.md) with
+`--run-dir artifacts/pilot-attempt-01/pilot` for every CLI action.
+Give the pilot only the manual, CLI, and this observation directory. The
+operator retains the sibling `evaluator` directory. Use process or filesystem
+isolation if the pilot must be prevented from reading files on the same host.
+
+The experiment operator creates `evaluator/finish.request` after the pilot
+finishes. The supervisor saves its terminal scene and exits the simulator.
+The runner retains a receipt for a completed attempt, a failed process, or
+a timeout. The receipt distinguishes a completed recording from whether the
+evaluator observed that the mission was achieved.
+
+```sh
+python scripts/run_pilot.py --replay artifacts/pilot-attempt-01
+```
+
+Replay verifies exact input and output hashes, reproduces the watchdog,
+applied controls and odometry, and recalculates the mission predicates from
+the evaluator trace. It checks that the pilot and evaluator sensor states
+refer to the same controller steps. A stale sensor sample or missing
+evaluation interval breaks the one-second dwell. A later above-floor contact
+invalidates mission success. Retain the receipt digest independently if
+moving a bundle between hosts.
